@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanjay Kumar - Digital Marketing Expert</title>
+    
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js CDN for the 3D background in the hero section -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap');
+        
+        :root {
+            --custom-red: #E21B27;
+            --custom-yellow: #FFC107;
+            --custom-green: #28A745;
+            --custom-dark: #1a1a1a;
+            --custom-light-gray: #f4f4f4;
+        }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            color: #333;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom Colors based on client's request */
+        .bg-custom-red { background-color: var(--custom-red); }
+        .text-custom-red { color: var(--custom-red); }
+        .bg-custom-yellow { background-color: var(--custom-yellow); }
+        .text-custom-green { color: var(--custom-green); }
+        .bg-custom-dark { background-color: var(--custom-dark); }
+        .text-custom-dark { color: var(--custom-dark); }
+        .bg-custom-light-gray { background-color: var(--custom-light-gray); }
+        .text-custom-light-gray { color: var(--custom-light-gray); }
+        
+        /* Animation utility classes for scroll-triggered effects */
+        .animate-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-slide-in-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .animate-slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-slide-in-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* 3D background styling for the hero section */
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Ensure hero content is above the 3D background */
+        #hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Mobile menu styling */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        /* Testimonial carousel improvements */
+        .testimonial-slide {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        .testimonial-slide.active {
+            opacity: 1;
+            display: block;
+        }
+        
+        /* Form validation styling */
+        .form-input:invalid {
+            border-color: var(--custom-red);
+        }
+        
+        .form-input:valid {
+            border-color: #28A745;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Loading animation */
+        .loader {
+            border-top-color: var(--custom-red);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Pulse animation for CTA buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse:hover {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Loading Screen -->
+    <div id="loading" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white shadow-lg py-4 transition-all duration-300">
+        <div class="container mx-auto px-6 lg:px-12 flex justify-between items-center">
+            <a href="#" class="text-xl md:text-2xl font-bold text-gray-800 tracking-wide">SANJAY KUMAR</a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#about" class="text-gray-600 hover:text-custom-red transition-colors duration-300">About</a>
+                <a href="#services" class="text-gray-600 hover:text-custom-red transition-colors duration-300">Services</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-custom-red transition-colors duration-300">Testimonials</a>
+                <a href="#contact" class="text-gray-600 hover:text-custom-red transition-colors duration-300">Contact</a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 md:hidden">
+            <button id="close-menu" class="absolute top-4 right-4 text-gray-600 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="mt-12 flex flex-col space-y-6">
+                <a href="#about" class="text-gray-600 hover:text-custom-red transition-colors duration-300 text-lg">About</a>
+                <a href="#services" class="text-gray-600 hover:text-custom-red transition-colors duration-300 text-lg">Services</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-custom-red transition-colors duration-300 text-lg">Testimonials</a>
+                <a href="#contact" class="text-gray-600 hover:text-custom-red transition-colors duration-300 text-lg">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section with 3D background -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden bg-custom-dark text-white">
+        <!-- The canvas for our 3D background -->
+        <canvas id="three-canvas"></canvas>
+
+        <div id="hero-content" class="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center justify-between">
+            <div class="w-full lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0 animate-fade-in">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 text-white">
+                    I Help Businesses Get <br class="hidden lg:inline"> Consistent, High-Quality Leads Every Day
+                </h1>
+                <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+                    As a Digital Marketer, Consultant & Mentor, I specialize in performance marketing strategies that bring predictable growth and long-term success.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#contact" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-red text-white transition-all duration-300 hover:shadow-xl hover:bg-red-700 pulse">
+                        BOOK A FREE STRATEGY CALL
+                    </a>
+                    <a href="#services" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-yellow text-gray-800 transition-all duration-300 hover:shadow-xl hover:bg-yellow-400 pulse">
+                        START GROWING TODAY
+                    </a>
+                </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2 flex justify-center lg:justify-end animate-fade-in">
+                <div class="w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden shadow-2xl border-4 border-white relative">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="A professional headshot of Sanjay Kumar" class="object-cover w-full h-full">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-30"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#about" class="text-white">
+                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6 lg:px-12">
+            <!-- Credibility Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-center animate-fade-in">
+                <div class="p-4 rounded-lg bg-custom-light-gray transform transition-all duration-300 hover:scale-105">
+                    <h3 class="text-3xl font-bold text-custom-green mb-2">7+</h3>
+                    <p class="text-sm text-gray-600">Years Experience</p>
+                </div>
+                <div class="p-4 rounded-lg bg-custom-light-gray transform transition-all duration-300 hover:scale-105">
+                    <h3 class="text-3xl font-bold text-custom-green mb-2">₹5 Cr+</h3>
+                    <p class="text-sm text-gray-600">Ad Spend Managed</p>
+                </div>
+                <div class="p-4 rounded-lg bg-custom-light-gray transform transition-all duration-300 hover:scale-105">
+                    <h3 class="text-3xl font-bold text-custom-green mb-2">70+</h3>
+                    <p class="text-sm text-gray-600">Brands</p>
+                </div>
+                <div class="p-4 rounded-lg bg-custom-light-gray transform transition-all duration-300 hover:scale-105">
+                    <h3 class="text-3xl font-bold text-custom-green mb-2">300+</h3>
+                    <p class="text-sm text-gray-600">Professionals Trained</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0 lg:space-x-12">
+                <div class="w-full lg:w-1/2 animate-slide-in-left">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80" alt="Sanjay Kumar's professional photo" class="w-full h-auto rounded-lg shadow-xl">
+                        <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-custom-red rounded-full flex items-center justify-center text-white font-bold text-sm p-4 shadow-lg">Digital Marketing Expert</div>
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2 lg:pl-12 animate-slide-in-right">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-custom-dark">Hi, I'm Sanjay Kumar</h2>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        A Digital Marketer, Consultant, and Mentor. My journey started over <strong>7 years ago</strong>, when I realized that most businesses struggle not because their products are weak, but because they don't have a predictable way to get consistent, high-quality leads.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        Since then, I've managed <strong>₹5 Cr+ in ad spend</strong> and worked with <strong>70+ brands</strong>, but what excites me most is transformation—seeing a business owner go from struggling to thriving.
+                    </p>
+                    <div class="flex flex-wrap gap-4 mt-8">
+                        <a href="#contact" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-red text-white transition-all duration-300 hover:shadow-xl hover:bg-red-700 pulse">LET'S WORK TOGETHER</a>
+                        <a href="#packages" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider border border-custom-red text-custom-red transition-all duration-300 hover:bg-custom-red hover:text-white pulse">VIEW PACKAGES</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-custom-light-gray">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-custom-dark animate-fade-in">Services / What I Do</h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in">I help startups, freelancers, agency owners, and coaches grow faster and smarter with proven digital strategies.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-chart-line text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">Performance Marketing</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Run data-driven ad campaigns on Meta and Google that deliver predictable, high-quality leads every day and maximize ROI.</p>
+                </div>
+                <!-- Service Card 2 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-users text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">Social Media Growth</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Build a strong digital presence with engaging content, community building, and strategies that turn followers into paying clients.</p>
+                </div>
+                <!-- Service Card 3 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-graduation-cap text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">Coaching & Consulting</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">One-on-one or group mentorship to help you master digital marketing, sales, and growth strategies — so you can scale with confidence.</p>
+                </div>
+                <!-- Service Card 4 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-user-tie text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">Personal Branding</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Position yourself as an authority in your niche with content, storytelling, and visibility strategies that attract opportunities and clients naturally.</p>
+                </div>
+                <!-- Service Card 5 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.5s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-funnel-dollar text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">Funnel Automation</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Set up smart funnels and automations that nurture leads, close sales, and save time — so your business works even when you don't.</p>
+                </div>
+                <!-- Service Card 6 -->
+                <div class="p-8 bg-white rounded-xl border-t-4 border-b-4 border-transparent shadow-sm transition-all duration-300 hover:shadow-lg hover:border-custom-red hover:scale-105 animate-fade-in" style="animation-delay: 0.6s;">
+                    <div class="mb-4">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                            <i class="fas fa-analytics text-custom-red text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2 text-custom-dark">ROI Optimization</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Maximize your return on investment with data-driven strategies that optimize your marketing spend and boost profitability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Packages Section -->
+    <section id="packages" class="py-20 bg-white">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-custom-dark animate-fade-in">Service Packages</h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in">Custom packages designed to meet your business goals and stage of growth.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Package 1: Growth Package -->
+                <div class="p-8 bg-custom-light-gray rounded-xl shadow-lg border-l-4 border-custom-red transition-all duration-300 hover:shadow-2xl hover:border-custom-red animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 bg-custom-red rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-rocket text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-custom-dark">🚀 Growth Package</h3>
+                    <p class="text-sm text-gray-500 mb-6">For startups & freelancers who want consistent, high-quality leads.</p>
+                    <ul class="text-left text-gray-700 space-y-3 mb-8">
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Performance Marketing (Meta & Google Ads)</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Social Setup & Strategy</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Lead Generation Funnels</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Monthly Performance Reports</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Weekly Strategy Calls</li>
+                    </ul>
+                    <p class="text-left text-sm italic text-gray-600 mb-4">
+                        <span class="font-bold">Outcome:</span> Daily inbound leads and a predictable client pipeline.
+                    </p>
+                    <a href="#contact" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-red text-white transition-all duration-300 hover:shadow-xl hover:bg-red-700 pulse">CONTACT FOR PRICING</a>
+                </div>
+
+                <!-- Package 2: Authority Package -->
+                <div class="p-8 bg-custom-light-gray rounded-xl shadow-lg border-l-4 border-custom-red transition-all duration-300 hover:shadow-2xl hover:border-custom-red animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-custom-red rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-crown text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-custom-dark">🌟 Authority Package</h3>
+                    <p class="text-sm text-gray-500 mb-6">For coaches, consultants & agency owners who want to stand out and attract clients naturally.</p>
+                    <ul class="text-left text-gray-700 space-y-3 mb-8">
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Personal Branding (content & storytelling)</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Social Media Growth</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Funnel Automation</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Content Strategy</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>LinkedIn Profile Optimization</li>
+                    </ul>
+                    <p class="text-left text-sm italic text-gray-600 mb-4">
+                        <span class="font-bold">Outcome:</span> A strong personal brand that builds trust and attracts clients without chasing them.
+                    </p>
+                    <a href="#contact" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-red text-white transition-all duration-300 hover:shadow-xl hover:bg-red-700 pulse">CONTACT FOR PRICING</a>
+                </div>
+
+                <!-- Package 3: Scale Package -->
+                <div class="p-8 bg-custom-light-gray rounded-xl shadow-lg border-l-4 border-custom-red transition-all duration-300 hover:shadow-2xl hover:border-custom-red animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="w-16 h-16 bg-custom-red rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-custom-dark">📈 Scale Package</h3>
+                    <p class="text-sm text-gray-500 mb-6">For businesses ready to grow revenue profitably.</p>
+                    <ul class="text-left text-gray-700 space-y-3 mb-8">
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Advanced Performance Marketing</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Funnel Automation & Lead Nurturing</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Coaching & Consulting for growth strategy</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>ROI Optimization</li>
+                        <li><span class="font-bold text-custom-green mr-2">✓</span>Competitor Analysis</li>
+                    </ul>
+                    <p class="text-left text-sm italic text-gray-600 mb-4">
+                        <span class="font-bold">Outcome:</span> Higher revenue, profitable scaling, and clarity in long-term growth.
+                    </p>
+                    <a href="#contact" class="px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-red text-white transition-all duration-300 hover:shadow-xl hover:bg-red-700 pulse">CONTACT FOR PRICING</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-custom-dark text-white">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-custom-light-gray animate-fade-in">What Clients Say</h2>
+            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto animate-fade-in">Hear from those who have experienced predictable growth and long-term success.</p>
+
+            <div class="relative w-full max-w-3xl mx-auto h-72">
+                <!-- Testimonial Carousel -->
+                <div id="testimonial-carousel" class="h-full relative">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-slide active p-8 bg-gray-800 rounded-lg shadow-xl text-center h-full flex flex-col justify-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border-2 border-custom-red">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80" alt="Client" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-md text-gray-300 italic mb-4">
+                            "Working with Sanjay completely changed the way we approached marketing. Within 30 days, we generated more revenue than in the past 6 months combined."
+                        </p>
+                        <p class="font-bold text-lg">- Rajesh Sharma, Founder of TechGrow</p>
+                        <div class="flex justify-center mt-2">
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-slide p-8 bg-gray-800 rounded-lg shadow-xl text-center h-full flex flex-col justify-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border-2 border-custom-red">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80" alt="Client" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-md text-gray-300 italic mb-4">
+                            "The funnel automation Sanjay built helped us save time and close more clients without chasing them. We now get consistent leads every single day."
+                        </p>
+                        <p class="font-bold text-lg">- Priya Patel, Agency Owner</p>
+                        <div class="flex justify-center mt-2">
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-slide p-8 bg-gray-800 rounded-lg shadow-xl text-center h-full flex flex-col justify-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border-2 border-custom-red">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80" alt="Client" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-md text-gray-300 italic mb-4">
+                            "I joined Sanjay's mentorship program, and in just 8 weeks, I went from struggling to closing high-ticket clients confidently. His coaching gave me clarity and results."
+                        </p>
+                        <p class="font-bold text-lg">- Amit Verma, Freelancer turned Coach</p>
+                        <div class="flex justify-center mt-2">
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                            <i class="fas fa-star text-custom-yellow"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Carousel Navigation -->
+                <div class="absolute inset-y-0 left-0 flex items-center">
+                    <button id="prev-testimonial" class="p-2 text-white bg-gray-700 rounded-full bg-opacity-50 hover:bg-opacity-75 transition-all duration-300">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center">
+                    <button id="next-testimonial" class="p-2 text-white bg-gray-700 rounded-full bg-opacity-50 hover:bg-opacity-75 transition-all duration-300">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </div>
+                
+                <!-- Carousel Indicators -->
+                <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-400" data-index="0"></button>
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-400" data-index="1"></button>
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-400" data-index="2"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-custom-light-gray">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-custom-dark animate-fade-in">Ready to Grow Your Business?</h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in">The next step to consistent growth starts here. I'd love to hear about your goals.</p>
+            
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-12 animate-fade-in">
+                <!-- Contact Info -->
+                <div class="p-8 bg-white rounded-xl shadow-lg text-left w-full md:w-1/2 lg:w-1/3">
+                    <h3 class="text-xl font-bold mb-4 text-custom-dark">Contact Me Directly</h3>
+                    <p class="mb-4 text-gray-700 flex items-start">
+                        <i class="fas fa-envelope text-custom-red mr-3 mt-1"></i>
+                        <span>Email: <span class="font-semibold">sanjay@example.com</span></span>
+                    </p>
+                    <p class="mb-4 text-gray-700 flex items-start">
+                        <i class="fas fa-phone-alt text-custom-red mr-3 mt-1"></i>
+                        <span>Phone: <span class="font-semibold">+91 99999 99999</span></span>
+                    </p>
+                    <p class="mb-4 text-gray-700 flex items-start">
+                        <i class="fab fa-whatsapp text-custom-red mr-3 mt-1"></i>
+                        <span>WhatsApp: <span class="font-semibold">+91 99999 99999</span></span>
+                    </p>
+                    <p class="text-gray-700 flex items-start">
+                        <i class="fas fa-map-marker-alt text-custom-red mr-3 mt-1"></i>
+                        <span>Location: <span class="font-semibold">Based in India, working with clients worldwide 🌍</span></span>
+                    </p>
+                    
+                    <div class="mt-6 flex space-x-4">
+                        <a href="#" class="text-gray-600 hover:text-custom-red transition-colors duration-300">
+                            <i class="fab fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-custom-red transition-colors duration-300">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-custom-red transition-colors duration-300">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-custom-red transition-colors duration-300">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="p-8 bg-white rounded-xl shadow-lg w-full md:w-1/2 lg:w-2/3">
+                    <h3 class="text-xl font-bold mb-4 text-center text-custom-dark">Get in Touch</h3>
+                    <form id="contact-form">
+                        <input type="text" placeholder="Name" class="form-input w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:border-custom-red" required>
+                        <input type="email" placeholder="Email" class="form-input w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:border-custom-red" required>
+                        <input type="text" placeholder="Business Name" class="form-input w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:border-custom-red" required>
+                        <textarea rows="4" placeholder="Message" class="form-input w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:border-custom-red" required></textarea>
+                        <button type="submit" class="w-full px-8 py-3 rounded-full font-semibold text-sm tracking-wider bg-custom-yellow text-gray-800 transition-all duration-300 hover:shadow-xl hover:bg-yellow-400 pulse">
+                            SEND MESSAGE
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="container mx-auto px-6 lg:px-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center text-custom-dark">Frequently Asked Questions</h2>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <!-- FAQ Item 1 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-semibold text-lg text-custom-dark focus:outline-none">
+                        <span>How long does it take to see results from your strategies?</span>
+                        <i class="fas fa-chevron-down text-custom-red"></i>
+                    </button>
+                    <div class="faq-answer mt-4 text-gray-600 hidden">
+                        Most clients start seeing initial results within 30-45 days, with significant growth occurring within 3-6 months. The exact timeline depends on your industry, current online presence, and how quickly we can implement strategies.
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-semibold text-lg text-custom-dark focus:outline-none">
+                        <span>Do you work with businesses outside of India?</span>
+                        <i class="fas fa-chevron-down text-custom-red"></i>
+                    </button>
+                    <div class="faq-answer mt-4 text-gray-600 hidden">
+                        Yes, absolutely! I work with clients worldwide. Digital marketing knows no boundaries, and I've successfully helped businesses in the US, UK, Australia, and the Middle East.
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-semibold text-lg text-custom-dark focus:outline-none">
+                        <span>What makes your approach different from other marketers?</span>
+                        <i class="fas fa-chevron-down text-custom-red"></i>
+                    </button>
+                    <div class="faq-answer mt-4 text-gray-600 hidden">
+                        My approach is data-driven and focused on ROI. I don't believe in vanity metrics. Instead, I focus on strategies that generate measurable results and predictable growth. With over 7 years of experience across 70+ brands, I've developed a proven system that delivers consistent results.
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-semibold text-lg text-custom-dark focus:outline-none">
+                        <span>Do you offer customized packages?</span>
+                        <i class="fas fa-chevron-down text-custom-red"></i>
+                    </button>
+                    <div class="faq-answer mt-4 text-gray-600 hidden">
+                        Yes, I understand that every business has unique needs. While I have standard packages, I often create custom solutions tailored to specific business goals and budgets. Let's discuss your requirements during our strategy call.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-custom-dark text-center text-gray-400">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <p class="text-2xl font-semibold mb-4 md:mb-0 text-gray-200">SANJAY KUMAR</p>
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-twitter text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-linkedin-in text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-instagram text-lg"></i>
+                    </a>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#about" class="text-gray-400 hover:text-white transition-colors duration-300">About</a>
+                    <a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Services</a>
+                    <a href="#contact" class="text-gray-400 hover:text-white transition-colors duration-300">Contact</a>
+                </div>
+            </div>
+            <p>&copy; 2024 Sanjay Kumar. All Rights Reserved.</p>
+            <p class="mt-2 text-sm">Made with ❤️ in India</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top bg-custom-red text-white p-3 rounded-full shadow-lg">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </a>
+
+    <!-- JavaScript for 3D and Animations -->
+    <script>
+        // Wait for page to load
+        window.addEventListener('load', function() {
+            // Hide loading screen
+            document.getElementById('loading').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('loading').style.display = 'none';
+            }, 500);
+            
+            // Initialize everything
+            initThree();
+            animateThree();
+            initTestimonialCarousel();
+            initScrollAnimations();
+            initMobileMenu();
+            initBackToTop();
+            initFAQ();
+            initFormValidation();
+        });
+
+        // --- Three.js 3D Background ---
+        let scene, camera, renderer, particles;
+        let particleCount = 1500;
+        let mouseX = 0, mouseY = 0;
+
+        function initThree() {
+            const canvas = document.getElementById('three-canvas');
+            if (!canvas) return;
+            
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 200;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+            window.addEventListener('resize', onWindowResize, false);
+
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+
+            const pMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 2,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                sizeAttenuation: true
+            });
+
+            for (let i = 0; i < particleCount; i++) {
+                const pX = Math.random() * 500 - 250;
+                const pY = Math.random() * 500 - 250;
+                const pZ = Math.random() * 500 - 250;
+                vertices.push(pX, pY, pZ);
+                
+                // Add some red particles
+                if (i % 10 === 0) {
+                    colors.push(0.886, 0.106, 0.173); // Custom red
+                } else {
+                    colors.push(1, 1, 1); // White
+                }
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            pMaterial.vertexColors = true;
+            
+            particles = new THREE.Points(geometry, pMaterial);
+            scene.add(particles);
+
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('touchstart', onDocumentTouchStart, false);
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+        }
+
+        function onDocumentMouseMove(event) {
+            mouseX = event.clientX - window.innerWidth / 2;
+            mouseY = event.clientY - window.innerHeight / 2;
+        }
+
+        function onDocumentTouchStart(event) {
+            if (event.touches.length === 1) {
+                event.preventDefault();
+                mouseX = event.touches[0].pageX - window.innerWidth / 2;
+                mouseY = event.touches[0].pageY - window.innerHeight / 2;
+            }
+        }
+
+        function onDocumentTouchMove(event) {
+            if (event.touches.length === 1) {
+                event.preventDefault();
+                mouseX = event.touches[0].pageX - window.innerWidth / 2;
+                mouseY = event.touches[0].pageY - window.innerHeight / 2;
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animateThree() {
+            if (!camera || !scene || !renderer) return;
+            
+            requestAnimationFrame(animateThree);
+            
+            camera.position.x += (mouseX * 0.05 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 0.05 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            if (particles) {
+                particles.rotation.y += 0.0005;
+                particles.rotation.x += 0.0002;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        // --- Testimonial Carousel ---
+        function initTestimonialCarousel() {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const prevButton = document.getElementById('prev-testimonial');
+            const nextButton = document.getElementById('next-testimonial');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            let currentIndex = 0;
+
+            if (slides.length === 0) return;
+
+            function updateCarousel() {
+                slides.forEach((slide, index) => {
+                    if (index === currentIndex) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+                
+                indicators.forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.add('bg-custom-red');
+                        indicator.classList.remove('bg-gray-400');
+                    } else {
+                        indicator.classList.remove('bg-custom-red');
+                        indicator.classList.add('bg-gray-400');
+                    }
+                });
+            }
+
+            function showNext() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateCarousel();
+            }
+
+            function showPrev() {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateCarousel();
+            }
+
+            function goToSlide(index) {
+                currentIndex = index;
+                updateCarousel();
+            }
+
+            if (nextButton) nextButton.addEventListener('click', showNext);
+            if (prevButton) prevButton.addEventListener('click', showPrev);
+            
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+
+            // Auto-slide every 5 seconds
+            setInterval(showNext, 5000);
+            updateCarousel(); // Initial call to position carousel correctly
+        }
+
+        // --- Scroll-Triggered Animations ---
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-fade-in, .animate-slide-in-left, .animate-slide-in-right').forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // --- Mobile Menu ---
+        function initMobileMenu() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeMenuButton = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (!mobileMenuButton || !closeMenuButton || !mobileMenu) return;
+            
+            function toggleMenu() {
+                mobileMenu.classList.toggle('open');
+                document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+            }
+            
+            mobileMenuButton.addEventListener('click', toggleMenu);
+            closeMenuButton.addEventListener('click', toggleMenu);
+            
+            // Close menu when clicking on links
+            const menuLinks = mobileMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+        }
+
+        // --- Back to Top Button ---
+        function initBackToTop() {
+            const backToTopButton = document.querySelector('.back-to-top');
+            
+            if (!backToTopButton) return;
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('show');
+                } else {
+                    backToTopButton.classList.remove('show');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // --- FAQ Accordion ---
+        function initFAQ() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('i');
+                    
+                    // Toggle answer
+                    answer.classList.toggle('hidden');
+                    
+                    // Rotate icon
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+        }
+
+        // --- Form Validation ---
+        function initFormValidation() {
+            const contactForm = document.getElementById('contact-form');
+            
+            if (!contactForm) return;
+            
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Basic validation
+                const inputs = contactForm.querySelectorAll('input, textarea');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        isValid = false;
+                        input.classList.add('border-red-500');
+                    } else {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+                
+                if (isValid) {
+                    // Here you would typically send the form data to a server
+                    alert('Thank you for your message! I will get back to you soon.');
+                    contactForm.reset();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
